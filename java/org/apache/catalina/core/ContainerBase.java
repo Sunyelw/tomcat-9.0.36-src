@@ -714,6 +714,8 @@ public abstract class ContainerBase extends LifecycleMBeanBase
             if ((getState().isAvailable() ||
                     LifecycleState.STARTING_PREP.equals(getState())) &&
                     startChildren) {
+
+                // 具体处理 Context 的注入
                 child.start();
             }
         } catch (LifecycleException e) {
@@ -865,6 +867,8 @@ public abstract class ContainerBase extends LifecycleMBeanBase
     }
 
 
+    // 这里是 Engine组件( Servlet容器 )进行初始化的最后一步
+    // 创建了一个线程, 在 start 阶段用于启动 Host
     private void reconfigureStartStopExecutor(int threads) {
         if (threads == 1) {
             // Use a fake executor
@@ -887,6 +891,10 @@ public abstract class ContainerBase extends LifecycleMBeanBase
      * @exception LifecycleException if this component detects a fatal error
      *  that prevents this component from being used
      */
+
+    // Container 的几个组件都是从这里启动 <ContainerBase>
+    // ContainerBase 有四个继承类
+    // StandardEngine / StandardHost / StandardContext / StandardWrapper
     @Override
     protected synchronized void startInternal() throws LifecycleException {
 
@@ -906,6 +914,10 @@ public abstract class ContainerBase extends LifecycleMBeanBase
         Container children[] = findChildren();
         List<Future<Void>> results = new ArrayList<>();
         for (Container child : children) {
+
+            // 这就是 Engine init 过程中构建好的线程池
+            // 这个线程池是在实例化 Engine 时给 Host 用的
+            // 处理逻辑在 StandardHost 中的 startInternal
             results.add(startStopExecutor.submit(new StartChild(child)));
         }
 
@@ -933,6 +945,8 @@ public abstract class ContainerBase extends LifecycleMBeanBase
             ((Lifecycle) pipeline).start();
         }
 
+        // 这里设置容器生命周期状态
+        // 通过生命周期事件来实例化 Context
         setState(LifecycleState.STARTING);
 
         // Start our thread

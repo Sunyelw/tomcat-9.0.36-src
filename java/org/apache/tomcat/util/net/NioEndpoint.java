@@ -222,9 +222,14 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
     // implement custom [server]sockets
     protected void initServerSocket() throws Exception {
         if (!getUseInheritedChannel()) {
+
+            // NIO之 获取通道 SocketChannel
             serverSock = ServerSocketChannel.open();
+
             socketProperties.setProperties(serverSock.socket());
             InetSocketAddress addr = new InetSocketAddress(getAddress(), getPortWithOffset());
+
+            // NIO之 绑定端口( IP:PORT )
             serverSock.socket().bind(addr,getAcceptCount());
         } else {
             // Retrieve the channel provided by the OS
@@ -277,6 +282,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
             pollerThread.setDaemon(true);
             pollerThread.start();
 
+            // 创建 Acceptor 线程
             startAcceptorThread();
         }
     }
@@ -704,6 +710,8 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                         if (wakeupCounter.getAndSet(-1) > 0) {
                             // If we are here, means we have other stuff to do
                             // Do a non blocking select
+
+                            // 是否存在就绪事件, 即Socket需要处理
                             keyCount = selector.selectNow();
                         } else {
                             keyCount = selector.select(selectorTimeout);
@@ -730,6 +738,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                     hasEvents = (hasEvents | events());
                 }
 
+                // 取出
                 Iterator<SelectionKey> iterator =
                     keyCount > 0 ? selector.selectedKeys().iterator() : null;
                 // Walk through the collection of ready keys and dispatch
@@ -1587,6 +1596,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                     if (event == null) {
                         state = getHandler().process(socketWrapper, SocketEvent.OPEN_READ);
                     } else {
+                        // 处理
                         state = getHandler().process(socketWrapper, event);
                     }
                     if (state == SocketState.CLOSED) {

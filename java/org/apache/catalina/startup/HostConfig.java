@@ -288,6 +288,8 @@ public class HostConfig implements LifecycleListener {
 
         // Identify the host we are associated with
         try {
+
+            // 处理 Host 相关事件监听
             host = (Host) event.getLifecycle();
             if (host instanceof StandardHost) {
                 setCopyXML(((StandardHost) host).isCopyXML());
@@ -306,6 +308,8 @@ public class HostConfig implements LifecycleListener {
         } else if (event.getType().equals(Lifecycle.BEFORE_START_EVENT)) {
             beforeStart();
         } else if (event.getType().equals(Lifecycle.START_EVENT)) {
+
+            // 启动事件
             start();
         } else if (event.getType().equals(Lifecycle.STOP_EVENT)) {
             stop();
@@ -421,10 +425,16 @@ public class HostConfig implements LifecycleListener {
         File appBase = host.getAppBaseFile();
         File configBase = host.getConfigBaseFile();
         String[] filteredAppPaths = filterAppPaths(appBase.list());
+
+        // 处理xml描述符
         // Deploy XML descriptors from configBase
         deployDescriptors(configBase, configBase.list());
+
+        // 处理war包模式
         // Deploy WARs
         deployWARs(appBase, filteredAppPaths);
+
+        // 处理目录格式
         // Deploy expanded folders
         deployDirectories(appBase, filteredAppPaths);
 
@@ -1029,6 +1039,7 @@ public class HostConfig implements LifecycleListener {
         ExecutorService es = host.getStartStopExecutor();
         List<Future<?>> results = new ArrayList<>();
 
+        // 遍历所有webapps下的目录
         for (String file : files) {
 
             if (file.equalsIgnoreCase("META-INF"))
@@ -1042,6 +1053,7 @@ public class HostConfig implements LifecycleListener {
                 if (isServiced(cn.getName()) || deploymentExists(cn.getName()))
                     continue;
 
+                // 将 Context 的创建与start 交予线程池处理
                 results.add(es.submit(new DeployDirectory(this, cn, dir)));
             }
         }
@@ -1130,6 +1142,10 @@ public class HostConfig implements LifecycleListener {
             context.setPath(cn.getPath());
             context.setWebappVersion(cn.getVersion());
             context.setDocBase(cn.getBaseName());
+
+            // 此处的 Context 并非完整的 Context, 仅设置了一些必要的属性信息
+            // 其 Servlet 所对应的 Wrapper 实例是空的
+            // 在这个方法里面完成 Wrapper 属性的注入
             host.addChild(context);
         } catch (Throwable t) {
             ExceptionUtils.handleThrowable(t);
@@ -1573,6 +1589,8 @@ public class HostConfig implements LifecycleListener {
         }
 
         if (host.getDeployOnStartup())
+
+            // 部署 Context
             deployApps();
 
     }

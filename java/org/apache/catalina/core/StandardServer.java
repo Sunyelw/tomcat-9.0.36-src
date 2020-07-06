@@ -927,6 +927,8 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         // Start our defined Services
         synchronized (servicesLock) {
             for (Service service : services) {
+
+                // 启动所有的 service
                 service.start();
             }
         }
@@ -1054,6 +1056,8 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         }
         // Initialize our defined Services
         for (Service service : services) {
+
+            // Service组件初始化
             service.init();
         }
     }

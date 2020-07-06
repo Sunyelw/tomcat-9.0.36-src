@@ -120,6 +120,8 @@ public abstract class LifecycleBase implements Lifecycle {
     protected void fireLifecycleEvent(String type, Object data) {
         LifecycleEvent event = new LifecycleEvent(this, type, data);
         for (LifecycleListener listener : lifecycleListeners) {
+
+            // 通过监听器处理事件
             listener.lifecycleEvent(event);
         }
     }
@@ -180,6 +182,8 @@ public abstract class LifecycleBase implements Lifecycle {
 
         try {
             setStateInternal(LifecycleState.STARTING_PREP, null, false);
+
+            // 这里真正执行
             startInternal();
             if (state.equals(LifecycleState.FAILED)) {
                 // This is a 'controlled' failure. The component put itself into the
@@ -420,6 +424,8 @@ public abstract class LifecycleBase implements Lifecycle {
         this.state = state;
         String lifecycleEvent = state.getLifecycleEvent();
         if (lifecycleEvent != null) {
+
+            // 触发 lifecycleEvent 生命周期事件
             fireLifecycleEvent(lifecycleEvent, data);
         }
     }

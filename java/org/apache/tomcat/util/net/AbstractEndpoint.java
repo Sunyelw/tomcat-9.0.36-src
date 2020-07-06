@@ -1138,6 +1138,10 @@ public abstract class AbstractEndpoint<S,U> {
 
     private void bindWithCleanup() throws Exception {
         try {
+            // 三种实现, 默认 NioEndpoint
+            // BioEndpoint
+            // NioEndpoint
+            // Nio2Endpoint
             bind();
         } catch (Throwable t) {
             // Ensure open sockets etc. are cleaned up if something goes

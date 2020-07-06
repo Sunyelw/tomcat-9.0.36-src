@@ -980,6 +980,8 @@ public class StandardWrapper extends ContainerBase
      */
     @Override
     public synchronized void load() throws ServletException {
+
+        // 真正对 Servlet 进行实例化 <反射>
         instance = loadServlet();
 
         if (!instanceInitialized) {
@@ -1037,6 +1039,7 @@ public class StandardWrapper extends ContainerBase
                     (sm.getString("standardWrapper.notClass", getName()));
             }
 
+            // 实例化 Servlet
             InstanceManager instanceManager = ((StandardContext)getParent()).getInstanceManager();
             try {
                 servlet = (Servlet) instanceManager.newInstance(servletClass);

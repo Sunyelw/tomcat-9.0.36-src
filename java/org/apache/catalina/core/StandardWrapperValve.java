@@ -101,6 +101,8 @@ final class StandardWrapperValve
         long t1=System.currentTimeMillis();
         requestCount.incrementAndGet();
         StandardWrapper wrapper = (StandardWrapper) getContainer();
+
+        // Servlet 登场
         Servlet servlet = null;
         Context context = (Context) wrapper.getParent();
 
@@ -169,6 +171,8 @@ final class StandardWrapperValve
         request.setAttribute(Globals.DISPATCHER_TYPE_ATTR,dispatcherType);
         request.setAttribute(Globals.DISPATCHER_REQUEST_PATH_ATTR,
                 requestPathMB);
+
+        // TODO 过滤器链<重要> 这里最后会触发 Servlet 的调用
         // Create the filter chain for this request
         ApplicationFilterChain filterChain =
                 ApplicationFilterFactory.createFilterChain(request, wrapper, servlet);
@@ -198,6 +202,8 @@ final class StandardWrapperValve
                     if (request.isAsyncDispatching()) {
                         request.getAsyncContextInternal().doInternalDispatch();
                     } else {
+
+                        // TODO 过滤器链执行
                         filterChain.doFilter
                             (request.getRequest(), response.getResponse());
                     }

@@ -281,7 +281,10 @@ public class Catalina {
         long t1=System.currentTimeMillis();
         // Initialize the digester
         Digester digester = new Digester();
+
+        // 不使用 DTD 校验 xml 文件格式
         digester.setValidating(false);
+        // TODO 开启校验(?)
         digester.setRulesValidation(true);
         Map<Class<?>, List<String>> fakeAttributes = new HashMap<>();
         // Ignore className on all elements
@@ -553,8 +556,11 @@ public class Catalina {
 
         // Set configuration source
         ConfigFileLoader.setSource(new CatalinaBaseConfigurationSource(Bootstrap.getCatalinaBaseFile(), getConfigFile()));
+
+        // 拿到配置文件路径 server.xml
         File file = configFile();
 
+        //  xml文件解析器 解析 server.xml
         // Create and execute our Digester
         Digester digester = createStartDigester();
 
@@ -563,6 +569,10 @@ public class Catalina {
             InputSource inputSource = new InputSource(resource.getURI().toURL().toString());
             inputSource.setByteStream(inputStream);
             digester.push(this);
+
+            // 解析配置文件 填充属性
+            // 包括 Catalina -> server -> services -> connector / engine
+            // 后续套娃式、按顺序进行初始化
             digester.parse(inputSource);
         } catch (Exception e) {
             log.warn(sm.getString("catalina.configFail", file.getAbsolutePath()), e);
@@ -581,6 +591,8 @@ public class Catalina {
 
         // Start the new server
         try {
+
+            // TODO Server的初始化
             getServer().init();
         } catch (LifecycleException e) {
             if (Boolean.getBoolean("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE")) {

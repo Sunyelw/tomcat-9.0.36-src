@@ -1475,6 +1475,10 @@ public class Digester extends DefaultHandler2 {
     public Object parse(InputSource input) throws IOException, SAXException {
         configure();
         getXMLReader().parse(input);
+
+        // server.xml 映射对象
+        // 这就是一个 Catalina 对象
+        // 就是简单地读取配置文件填充对象属性
         return root;
     }
 

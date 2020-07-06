@@ -80,7 +80,7 @@ public class EngineRuleSet implements RuleSet {
         digester.addSetProperties(prefix + "Engine");
         digester.addRule(prefix + "Engine",
                          new LifecycleListenerRule
-                         ("org.apache.catalina.startup.EngineConfig",
+                         ("org.apache.catalina.startup.EngineConfig", // TODO 这里设置 EngineHost 事件监听器
                           "engineConfigClass"));
         digester.addSetNext(prefix + "Engine",
                             "setContainer",

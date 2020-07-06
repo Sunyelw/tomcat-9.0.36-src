@@ -334,12 +334,17 @@ public class CoyoteAdapter implements Adapter {
         try {
             // Parse and set Catalina and configuration specific
             // request parameters
+
+            // TODO HttpServletRequest 寻找对应的 Servlet 实例的过程
+            // Request -> HttpServletRequest
+            // Response -> HttpServletResponse
             postParseSuccess = postParseRequest(req, request, res, response);
             if (postParseSuccess) {
                 //check valves if we support async
                 request.setAsyncSupported(
                         connector.getService().getContainer().getPipeline().isAsyncSupported());
                 // Calling the container
+                // 找到 Servlet 方法执行
                 connector.getService().getContainer().getPipeline().getFirst().invoke(
                         request, response);
             }
@@ -693,6 +698,7 @@ public class CoyoteAdapter implements Adapter {
 
         while (mapRequired) {
             // This will map the the latest version by default
+            // TODO 根据请求uri匹配出 Host->Context-Wrapper
             connector.getService().getMapper().map(serverName, decodedURI,
                     version, request.getMappingData());
 

@@ -300,6 +300,8 @@ public final class Bootstrap {
         if (log.isDebugEnabled()) {
             log.debug("Calling startup class " + method);
         }
+
+        // 调用 Catalina 的 load 方法
         method.invoke(catalinaDaemon, param);
     }
 
@@ -440,6 +442,8 @@ public final class Bootstrap {
                 // Don't set daemon until init() has completed
                 Bootstrap bootstrap = new Bootstrap();
                 try {
+                    // TODO 1.初始化
+                    // 创建一个Catalina对象初始化 catalinaDaemon
                     bootstrap.init();
                 } catch (Throwable t) {
                     handleThrowable(t);
@@ -469,8 +473,12 @@ public final class Bootstrap {
                 args[args.length - 1] = "stop";
                 daemon.stop();
             } else if (command.equals("start")) {
+
+                // tomcat 启动
                 daemon.setAwait(true);
+                // TODO 2.加载
                 daemon.load(args);
+                // TODO 3.真正启动
                 daemon.start();
                 if (null == daemon.getServer()) {
                     System.exit(1);

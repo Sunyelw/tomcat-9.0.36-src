@@ -699,7 +699,7 @@ public final class Mapper {
         }
         host.toChars();
         uri.toChars();
-        internalMap(host.getCharChunk(), uri.getCharChunk(), version, mappingData);
+        internalMap(host.getCharChunk(), uri.getCharChunk(), version, mappingData); // 具体匹配逻辑
     }
 
 
@@ -744,6 +744,7 @@ public final class Mapper {
             throw new AssertionError();
         }
 
+        // TODO 1 匹配host
         // Virtual host mapping
         MappedHost[] hosts = this.hosts;
         MappedHost mappedHost = exactFindIgnoreCase(hosts, host);
@@ -777,6 +778,7 @@ public final class Mapper {
 
         uri.setLimit(-1);
 
+        // TODO 2 匹配Context
         // Context mapping
         ContextList contextList = mappedHost.contextList;
         MappedContext[] contexts = contextList.contexts;
@@ -846,6 +848,7 @@ public final class Mapper {
         mappingData.context = contextVersion.object;
         mappingData.contextSlashCount = contextVersion.slashCount;
 
+        // TODO 匹配Wrapper
         // Wrapper mapping
         if (!contextVersion.isPaused()) {
             internalMapWrapper(contextVersion, uri, mappingData);

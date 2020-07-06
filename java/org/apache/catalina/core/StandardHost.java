@@ -702,6 +702,8 @@ public class StandardHost extends ContainerBase implements Host {
             context.setPath(cn.getPath());
         }
 
+        // 这里实际添加 Wrapper
+        // ContainerBase 实现
         super.addChild(child);
 
     }
@@ -838,6 +840,8 @@ public class StandardHost extends ContainerBase implements Host {
                         errorValve), t);
             }
         }
+
+        // 这里继续调用 ContainerBase 父类方法
         super.startInternal();
     }
 

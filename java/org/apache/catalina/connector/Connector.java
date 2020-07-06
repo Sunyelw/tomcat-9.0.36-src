@@ -1004,6 +1004,8 @@ public class Connector extends LifecycleMBeanBase  {
                     sm.getString("coyoteConnector.protocolHandlerInstantiationFailed"));
         }
 
+        // Adapter 适配器: 处理请求与响应的转换
+        // 将 ProtocolHandler 与 适配器进行绑定, 都属于一个 Connector 组件
         // Initialize adapter
         adapter = new CoyoteAdapter(this);
         protocolHandler.setAdapter(adapter);
@@ -1036,6 +1038,10 @@ public class Connector extends LifecycleMBeanBase  {
         }
 
         try {
+
+            // ProtocolHandler容器的初始化
+            // 包括 Endpoint与Processor
+            // TODO 重点关注 Endpoint 的端口绑定与 NIO的监听
             protocolHandler.init();
         } catch (Exception e) {
             throw new LifecycleException(

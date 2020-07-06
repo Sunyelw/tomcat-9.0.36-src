@@ -418,6 +418,8 @@ public class StandardService extends LifecycleMBeanBase implements Service {
         // Start our defined Container first
         if (engine != null) {
             synchronized (engine) {
+
+                // 启动 Engine 子容器
                 engine.start();
             }
         }
@@ -435,6 +437,8 @@ public class StandardService extends LifecycleMBeanBase implements Service {
             for (Connector connector: connectors) {
                 // If it has already failed, don't try and start it
                 if (connector.getState() != LifecycleState.FAILED) {
+
+                    // 启动 Connector 组件
                     connector.start();
                 }
             }
@@ -513,6 +517,9 @@ public class StandardService extends LifecycleMBeanBase implements Service {
         super.initInternal();
 
         if (engine != null) {
+
+            // 1.Engine组件, 即servlet容器 初始化
+            // 创建了一个线程池用于后续start流程中的 Host 的启动
             engine.init();
         }
 
@@ -530,6 +537,9 @@ public class StandardService extends LifecycleMBeanBase implements Service {
         // Initialize our defined Connectors
         synchronized (connectorsLock) {
             for (Connector connector : connectors) {
+
+                // 2. Connector组件 初始化
+                // endpoint 绑定端口
                 connector.init();
             }
         }

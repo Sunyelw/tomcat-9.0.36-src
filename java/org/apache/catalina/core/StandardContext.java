@@ -4861,6 +4861,7 @@ public class StandardContext extends ContainerBase
         for (ArrayList<Wrapper> list : map.values()) {
             for (Wrapper wrapper : list) {
                 try {
+                    // here
                     wrapper.load();
                 } catch (ServletException e) {
                     getLogger().error(sm.getString("standardContext.loadOnStartup.loadException",
@@ -4909,6 +4910,9 @@ public class StandardContext extends ContainerBase
             namingResources.start();
         }
 
+        // 创建工作目录, tomcat 下的 work 目录
+        // 用于存放jsp临时文件
+        // 将 jsp 转化为 servlet 编译成 .class 文件, 中间过程文件就存放在这里
         // Post work directory
         postWorkDirectory();
 
@@ -4928,6 +4932,7 @@ public class StandardContext extends ContainerBase
             resourcesStart();
         }
 
+        // 为每个应用设置类加载器
         if (getLoader() == null) {
             WebappLoader webappLoader = new WebappLoader();
             webappLoader.setDelegate(getDelegate());
@@ -5040,6 +5045,8 @@ public class StandardContext extends ContainerBase
                     context.setAttribute(Globals.CREDENTIAL_HANDLER, safeHandler);
                 }
 
+                // 类似的, 这里把 Context 的实例化通过生命周期事件的方式交给了 ContextConfig 处理
+                // 主要逻辑就是读取 web.xml 文件 用Wrapper封装Servlet并赋给 Context
                 // Notify our interested LifecycleListeners
                 fireLifecycleEvent(Lifecycle.CONFIGURE_START_EVENT, null);
 
@@ -5168,6 +5175,8 @@ public class StandardContext extends ContainerBase
                 }
             }
 
+            // 加载初始化 Servlet
+            // 实际处理 Servlet 的地方 <loadOnStartup>
             // Load and initialize all "load on startup" servlets
             if (ok) {
                 if (!loadOnStartup(findChildren())){

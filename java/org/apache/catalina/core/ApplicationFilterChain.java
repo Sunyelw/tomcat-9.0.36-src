@@ -163,6 +163,8 @@ public final class ApplicationFilterChain implements FilterChain {
                     throw new ServletException(e.getMessage(), e);
             }
         } else {
+
+            // TODO 真正执行 - core
             internalDoFilter(request,response);
         }
     }
@@ -228,6 +230,8 @@ public final class ApplicationFilterChain implements FilterChain {
                                            args,
                                            principal);
             } else {
+
+                // TODO 终于执行Servlet
                 servlet.service(request, response);
             }
         } catch (IOException | ServletException | RuntimeException e) {

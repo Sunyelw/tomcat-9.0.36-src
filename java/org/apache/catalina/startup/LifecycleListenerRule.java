@@ -126,6 +126,7 @@ public class LifecycleListenerRule extends Rule {
         Class<?> clazz = Class.forName(className);
         LifecycleListener listener = (LifecycleListener) clazz.getConstructor().newInstance();
 
+        // TODO 设置组件的生命周期事件监听类
         // Add this LifecycleListener to our associated component
         c.addLifecycleListener(listener);
     }

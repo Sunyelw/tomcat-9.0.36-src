@@ -578,6 +578,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
         endpoint.setName(endpointName.substring(1, endpointName.length()-1));
         endpoint.setDomain(domain);
 
+        // Endpoint 组件的初始化
         endpoint.init();
     }
 
@@ -775,6 +776,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
 
             S socket = wrapper.getSocket();
 
+            // 获取 Processor 来解析网络包 <http>
             Processor processor = (Processor) wrapper.getCurrentProcessor();
             if (getLog().isDebugEnabled()) {
                 getLog().debug(sm.getString("abstractConnectionHandler.connectionsGet",
@@ -850,7 +852,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
                     }
                 }
                 if (processor == null) {
-                    processor = getProtocol().createProcessor();
+                    processor = getProtocol().createProcessor(); // getProtocol() -> Http11NioProtocol (最常用的协议 http1.1)
                     register(processor);
                     if (getLog().isDebugEnabled()) {
                         getLog().debug(sm.getString("abstractConnectionHandler.processorCreate", processor));
@@ -865,6 +867,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
 
                 SocketState state = SocketState.CLOSED;
                 do {
+                    // 解析网络请求
                     state = processor.process(wrapper, status);
 
                     if (state == SocketState.UPGRADING) {
